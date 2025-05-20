@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEBUG @ Github Info</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/standard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Check your Github / Gitlab Connection</h1>
+    </header>
+    <main>
+        <!--
+        Buttons for testing notifications
+        <button onclick="showInfo('Info', 'This is an informational message.')">Show Info</button>
+        <button onclick="showWarning('Warning', 'This is a warning message.')">Show Warning</button>
+        <button onclick="showError('Error', 'This is an error message.')">Show Error</button>
+        -->
+        <input type="password" id="github_token" placeholder="Enter GitHub Token">
+        <button id="test_gh_gl_connection" class="round-corners">Test Connection</button>
+    </main>
+    <div id="notification-container"></div>
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/testing.js') }}"></script>
+</body>
+
+</html>
