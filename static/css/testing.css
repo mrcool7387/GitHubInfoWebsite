@@ -1,0 +1,16 @@
+#github_token {
+    width: 100px;
+    height: 30px;
+    border-radius: 20px;
+}
+
+#github_token:hover {
+    background-color: #2c3136;
+    color: #ffffff;
+}
+
+#github_token:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+

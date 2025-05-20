@@ -1,0 +1,55 @@
+/* Base styles */
+body {
+    background-color: #181a1b;
+    font-family: "Courier New", Courier, monospace;
+    margin: 5;
+    padding: 0;
+}
+
+
+/* Links */
+a {
+    color: #8ab4f8;
+}
+
+a:hover {
+    color: #a1c2fa;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+}
+
+/* Buttons */
+button, input[type="button"], input[type="submit"] {
+    background-color: #23272a;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+    background-color: #2c3136;
+}
+
+/* Forms */
+input, textarea, select {
+    background-color: #23272a;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+/* Code blocks */
+pre, code {
+    background-color: #222;
+    color: #b5cea8;
+}
+
+/* Borders and dividers */
+hr {
+    border-color: #333;
+}
+
+.round-corner {
+    border-radius: 10px;
+}

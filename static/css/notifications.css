@@ -1,11 +1,4 @@
 /* Notification container */
-.body {
-    font-family: Calibri, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
 #notification-container {
     position: fixed;
     top: 10px;
@@ -24,7 +17,7 @@
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     animation: slide-in 0.3s ease-out;
-    min-width: 250px;
+    width: 350px;
 }
 
 .notification .icon {
@@ -39,18 +32,23 @@
 }
 
 .notification.info {
-    background-color: rgba(33, 150, 243, 0.5); /* Light blue background */
+    background-color: rgba(0, 110, 203, 1); /* Light blue background */
     color: #2196f3; /* Full-color blue for text and icon */
 }
 
 .notification.warning {
-    background-color: rgba(255, 152, 0, 0.5); /* Light orange background */
+    background-color: rgba(215, 112, 0, 1); /* Light orange background */
     color: #ff9800; /* Full-color orange for text and icon */
 }
 
 .notification.error {
-    background-color: rgba(244, 67, 54, 0.5); /* Light red background */
+    background-color: rgba(204, 27, 14, 1); /* Light red background */
     color: #f44336; /* Full-color red for text and icon */
+}
+
+.notification.success {
+    background-color: rgba(75, 193, 0, 1); /* Light green background */
+    color: #73e913; /* Full-color green for text and icon */
 }
 
 /* Slide-in animation */

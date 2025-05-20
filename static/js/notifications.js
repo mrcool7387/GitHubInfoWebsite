@@ -22,6 +22,12 @@ function createNotification(type, title, description) {
                 <line x1="8" y1="8" x2="16" y2="16" stroke="#f44336" stroke-width="2"></line>
                 <line x1="16" y1="8" x2="8" y2="16" stroke="#f44336" stroke-width="2"></line>
             </svg>
+        `,
+        success: `
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="#4caf50" stroke-width="2" fill="none"></circle>
+                <polyline points="6,12 10,16 18,8" stroke="#4caf50" stroke-width="2" fill="none"></polyline>
+            </svg>
         `
     };
 
@@ -48,12 +54,20 @@ function createNotification(type, title, description) {
 // Helper functions for different types of notifications
 function showInfo(title, description) {
     createNotification('info', title, description);
+    console.info(`${title} - ${description}`);
 }
 
 function showWarning(title, description) {
     createNotification('warning', title, description);
+    console.warn(`${title} - ${description}`);
 }
 
 function showError(title, description) {
     createNotification('error', title, description);
+    console.error(`${title} - ${description}`);
+}
+
+function showSuccess(title, description) {
+    createNotification('success', title, description);
+    console.log(`Success: ${title} - ${description}`);
 }
