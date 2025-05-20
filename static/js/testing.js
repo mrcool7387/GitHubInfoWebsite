@@ -143,8 +143,7 @@ function testGitLabConnection() {
         });
 }
 
-function testGitHubConnectionWithToken() {
-    const token = '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';
+function testGitHubConnectionWithToken(token) {
     return fetch('https://api.github.com/user', {
         headers: {
             'Authorization': `token ${token}`
@@ -179,8 +178,7 @@ function testGitHubConnectionWithToken() {
         });
 }
 
-function testGitLabConnectionWithToken() {
-    const token = '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';
+function testGitLabConnectionWithToken(token) {
     return fetch('https://gitlab.com/api/v4/user', {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -223,9 +221,6 @@ document.getElementById('test_gh_gl_connection').addEventListener('click', funct
     }
     testGitHubConnection();
     testGitLabConnection();
-    testGitHubConnectionWithToken();
-    testGitLabConnectionWithToken();
+    testGitHubConnectionWithToken(token);
+    testGitLabConnectionWithToken(token);
 });
-
-
-// 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
