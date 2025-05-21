@@ -6,18 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/standard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
 </head>
 
 <body>
     <header>
-        <h1></h1>
+        <h1>GitHub Info Website</h1>
+        <input type="password" id="github-token" placeholder="Enter GitHub Token">
+        <button id="githubLoad" for="github-token">Load Info</button>
     </header>
     <main>
-
+        <div class="tab_cards">
+            <div pointsTo="general">General</div>
+            <div pointsTo="repos">Repos</div>
+        </div>
+        <div class="tab_pages">
+            <div class="tabPage general github-info-card" id="github-general-info">
+                <h2>General GitHub Info</h2>
+                    <!-- GitHub user info will be loaded here -->
+                </div>
+            </div>
+            <div class="tabPage repos">
+                <h2>Repositories</h2>
+                <p>List of repositories will be displayed here.</p>
+            </div>
+        </div>
     </main>
     <div id="notification-container"></div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
 </body>
 
 </html>

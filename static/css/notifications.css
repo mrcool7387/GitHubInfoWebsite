@@ -28,7 +28,7 @@
 }
 
 .notification .content {
-    color: #555; /* Lighter text color */
+    color: #fff; /* Lighter text color */
 }
 
 .notification.info {
