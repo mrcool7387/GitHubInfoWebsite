@@ -19,6 +19,12 @@
         <div class="tab_cards">
             <div pointsTo="general">General</div>
             <div pointsTo="repos">Repos</div>
+            <div pointsTo="pulls">Pull Requests & Issues</div>
+            <div pointsTo="webhooks">Webhooks & Deployments</div>
+            <div pointsTo="keys" class="off">SSH-Keys & Tokens</div>
+            <div pointsTo="actions">GitHub Actions</div>
+            <div pointsTo="stats" class="off">Statistiken</div>
+            <div pointsTo="admin">Admin</div>
         </div>
         <div class="tab_pages">
             <div class="tabPage general github-info-card" id="github-general-info">
@@ -29,6 +35,30 @@
             <div class="tabPage repos">
                 <h2>Repositories</h2>
                 <p>List of repositories will be displayed here.</p>
+            </div>
+            <div class="tabPage pulls github-info-card" id="github-pulls-info">
+                <h2>Pull Requests & Issues</h2>
+                <div>Loading...</div>
+            </div>
+            <div class="tabPage webhooks github-info-card" id="github-webhooks-info">
+                <h2>Webhooks & Deployments</h2>
+                <div>Loading...</div>
+            </div>
+            <div class="tabPage keys github-info-card" id="github-keys-info">
+                <h2>SSH-Keys, Tokens, App-Zugriffe</h2>
+                <div>Loading...</div>
+            </div>
+            <div class="tabPage actions github-info-card" id="github-actions-info">
+                <h2>GitHub Actions</h2>
+                <div>Loading...</div>
+            </div>
+            <div class="tabPage stats github-info-card" id="github-stats-info">
+                <h2>Statistiken & Analysen</h2>
+                <div>Loading...</div>
+            </div>
+            <div class="tabPage admin github-info-card" id="github-admin-info">
+                <h2>Admin-Zugriffe</h2>
+                <div>Loading...</div>
             </div>
         </div>
     </main>

@@ -8,6 +8,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 
+
 .tabPage.active {
   display: block;
 }
@@ -16,6 +17,11 @@
   display: flex;
   gap: 12px;
   margin-bottom: 14px;
+}
+
+.tab_cards .off {
+    color: red;
+    font-weight: bold;
 }
 
 .tab_cards div {

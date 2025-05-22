@@ -45,6 +45,7 @@ async function fetchGitHubUserInfo(token) {
     `;
     showSuccess("GitHub User", "User info loaded successfully.");
     fetchGitHubRepos(token, data.login);
+    fetchAllExtraGitHubInfo(token, data.login);
 }
 
 // Generated with AI - 21.05.2025 19:34.00
@@ -178,6 +179,133 @@ document.addEventListener('DOMContentLoaded', () => {
         activateTab(firstTab);
     }
 });
+
+async function fetchGitHubPulls(token, username) {
+    const pullsRes = await fetch(`https://api.github.com/search/issues?q=author:${username}+type:pr`, {
+        headers: {
+            "Authorization": `token ${token}`,
+            "Accept": "application/vnd.github+json"
+        }
+    });
+    const issuesRes = await fetch(`https://api.github.com/search/issues?q=author:${username}+type:issue`, {
+        headers: {
+            "Authorization": `token ${token}`,
+            "Accept": "application/vnd.github+json"
+        }
+    });
+    const pullsData = await pullsRes.json();
+    const issuesData = await issuesRes.json();
+    document.getElementById("github-pulls-info").innerHTML = `
+        <h2>Pull Requests & Issues</h2>
+        <div><b>Pull Requests:</b> ${pullsData.total_count}</div>
+        <div><b>Issues:</b> ${issuesData.total_count}</div>
+    `;
+}
+
+// Helper to get all repos for the user (returns array)
+async function getAllRepos(token, username) {
+    const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`, {
+        headers: {
+            "Authorization": `token ${token}`,
+            "Accept": "application/vnd.github+json"
+        }
+    });
+    if (!reposRes.ok) return [];
+    return await reposRes.json();
+}
+
+// Webhooks & Deployments: fetch for every repo and display like in the repo tab
+async function fetchGitHubWebhooks(token, username) {
+    const container = document.getElementById("github-webhooks-info");
+    container.innerHTML = `<h2>Webhooks & Deployments</h2><div>Loading...</div>`;
+    const repos = await getAllRepos(token, username);
+    if (!repos.length) {
+        container.innerHTML = `<h2>Webhooks & Deployments</h2><p>No repositories found or failed to load.</p>`;
+        return;
+    }
+    let html = `<h2>Webhooks & Deployments</h2><div class="github-repo-list">`;
+    for (const repo of repos) {
+        // Fetch webhooks for each repo
+        const hooksRes = await fetch(`https://api.github.com/repos/${username}/${repo.name}/hooks`, {
+            headers: {
+                "Authorization": `token ${token}`,
+                "Accept": "application/vnd.github+json"
+            }
+        });
+        let hooks = [];
+        if (hooksRes.ok) hooks = await hooksRes.json();
+        html += `
+            <div class="github-repo-card">
+                <div class="repo-header">
+                    <a href="${repo.html_url}" target="_blank" class="repo-name">${repo.name}</a>
+                </div>
+                <div class="repo-meta">
+                    <span>🔗 Webhooks: ${hooks.length}</span>
+                </div>
+                ${hooks.length > 0 ? `<ul style="margin-top:8px;">${hooks.map(h => `<li>${h.name} → <code>${h.config.url}</code></li>`).join('')}</ul>` : "<div style='color:#b0b6be;'>No webhooks</div>"}
+            </div>
+        `;
+    }
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+// GitHub Actions: fetch for every repo and display like in the repo tab
+async function fetchGitHubActions(token, username) {
+    const container = document.getElementById("github-actions-info");
+    container.innerHTML = `<h2>GitHub Actions</h2><div>Loading...</div>`;
+    const repos = await getAllRepos(token, username);
+    if (!repos.length) {
+        container.innerHTML = `<h2>GitHub Actions</h2><p>No repositories found or failed to load.</p>`;
+        return;
+    }
+    let html = `<h2>GitHub Actions</h2><div class="github-repo-list">`;
+    for (const repo of repos) {
+        // Fetch workflows for each repo
+        const actionsRes = await fetch(`https://api.github.com/repos/${username}/${repo.name}/actions/workflows`, {
+            headers: {
+                "Authorization": `token ${token}`,
+                "Accept": "application/vnd.github+json"
+            }
+        });
+        let workflows = [];
+        if (actionsRes.ok) {
+            const data = await actionsRes.json();
+            workflows = data.workflows || [];
+        }
+        html += `
+            <div class="github-repo-card">
+                <div class="repo-header">
+                    <a href="${repo.html_url}" target="_blank" class="repo-name">${repo.name}</a>
+                </div>
+                <div class="repo-meta">
+                    <span>⚙️ Actions: ${workflows.length}</span>
+                </div>
+                ${workflows.length > 0 ? `<ul style="margin-top:8px;">${workflows.map(w => `<li>${w.name} (${w.state})</li>`).join('')}</ul>` : "<div style='color:#b0b6be;'>No Actions</div>"}
+            </div>
+        `;
+    }
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+// Admin info is only available for org admins, so just show a note
+async function fetchGitHubAdmin(token, username) {
+    document.getElementById("github-admin-info").innerHTML = `
+        <h2>Admin-Zugriffe</h2>
+        <div>Admin access and organization management features are only available for organization admins.</div>
+    `;
+}
+
+// Call these after user info is loaded:
+async function fetchAllExtraGitHubInfo(token, username) {
+    fetchGitHubPulls(token, username);
+    fetchGitHubWebhooks(token, username);
+    // fetchGitHubKeys(token);
+    fetchGitHubActions(token, username);
+    // fetchGitHubStats(token, username);
+    fetchGitHubAdmin(token, username);
+}
 
 
 
