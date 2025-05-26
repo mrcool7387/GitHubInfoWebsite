@@ -131,13 +131,33 @@ document.addEventListener('DOMContentLoaded', () => {
     tabPages.style.display = "none";
     centerWrap.style.display = "flex";
 
-    loadBtn.addEventListener("click", () => {
+    // Live validation for GitHub token
+    function validateTokenInput() {
         const token = tokenInput.value.trim();
-        if (!token) { // || !token.startsWith("ghp") || token.length !== 24) {
+        // Accepts only tokens starting with 'ghp_' and 40 chars after (44 total)
+        const isValid = /^ghp_[A-Za-z0-9]{40}$/.test(token);
+        if (!isValid) {
+            tokenInput.classList.add('invalid-input');
+            loadBtn.disabled = true;
+        } else {
+            tokenInput.classList.remove('invalid-input');
+            loadBtn.disabled = false;
+        }
+        return isValid;
+    }
+    // Initial state
+    loadBtn.disabled = true;
+    tokenInput.classList.remove('invalid-input');
+    // Validate on input
+    tokenInput.addEventListener('input', validateTokenInput);
+
+    loadBtn.addEventListener("click", async () => {
+        if (!validateTokenInput()) {
             showError("GitHub Token", "Please enter a valid GitHub token");
             return;
         }
-        // Show loading animation for 3 seconds
+        const token = tokenInput.value.trim();
+        // Show loading animation
         centerWrap.style.display = "none";
         let loadingDiv = document.createElement("div");
         loadingDiv.className = "center-token-loading";
@@ -147,12 +167,47 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         centerWrap.parentNode.insertBefore(loadingDiv, centerWrap);
 
-        setTimeout(() => {
+        // Check token validity with GitHub API
+        let valid = false;
+        let userLogin = null;
+        let errorMsg = "";
+        try {
+            const res = await fetch("https://api.github.com/user", {
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Accept": "application/vnd.github+json"
+                }
+            });
+            if (res.status === 200) {
+                const user = await res.json();
+                valid = true;
+                userLogin = user.login;
+            } else if (res.status === 401) {
+                errorMsg = "Invalid or expired Token";
+            } else if (res.status === 403) {
+                errorMsg = "Access forbidden. Token may not have sufficient permissions or is restricted.";
+            } else {
+                errorMsg = `Unkown Error: ${res.status} ${getStatusMeaning(res.status)}`;
+            }
+        } catch (e) {
+            errorMsg = `Network Error: ${e.message}`;
+        }
+
+        if (valid) {
+            // Wait 3 more seconds, then proceed as before
+            setTimeout(() => {
+                loadingDiv.remove();
+                tabCards.style.display = "";
+                tabPages.style.display = "";
+                fetchGitHubUserInfo(token);
+            }, 3000);
+        } else {
+            // Go back to login, show error, allow retry
             loadingDiv.remove();
-            tabCards.style.display = "";
-            tabPages.style.display = "";
-            fetchGitHubUserInfo(token);
-        }, 3000);
+            centerWrap.style.display = "flex";
+            showError("GitHub Token", errorMsg || "Unbekannter Fehler");
+            tokenInput.focus();
+        }
     });
 
     // Tab logic (unchanged)
