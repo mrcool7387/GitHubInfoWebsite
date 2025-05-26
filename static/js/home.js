@@ -134,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Live validation for GitHub token
     function validateTokenInput() {
         const token = tokenInput.value.trim();
-        // Accepts only tokens starting with 'ghp_' and 40 chars after (44 total)
-        const isValid = /^ghp_[A-Za-z0-9]{40}$/.test(token);
+        // Accepts only tokens starting with 'ghp_' and 36 chars after (40 total)
+        const isValid = /^ghp_[A-Za-z0-9]{36}$/.test(token);
         if (!isValid) {
             tokenInput.classList.add('invalid-input');
             loadBtn.disabled = true;
