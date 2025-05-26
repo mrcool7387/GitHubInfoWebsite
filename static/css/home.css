@@ -8,7 +8,6 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 
-
 .tabPage.active {
   display: block;
 }
@@ -54,7 +53,7 @@
     padding: 22px 24px;
     color: #e5e7eb;
     box-shadow: 0 2px 8px rgba(0,0,0,0.13);
-    max-width: 700px;
+    /* max-width: 700px; */
     margin: 0 auto;
 }
 .github-user-header {
@@ -139,7 +138,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.10);
     padding: 16px 18px;
     min-width: 260px;
-    max-width: 340px;
+    /* max-width: 340px; */
     flex: 1 1 300px;
     display: flex;
     flex-direction: column;
@@ -310,3 +309,42 @@
   opacity: 0.7;
   box-shadow: none;
 }
+
+.github-repo-card .event-summary {
+    font-size: 1em;
+    color: #e5e7eb;
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.github-repo-card .event-json {
+    background: #181c20;
+    color: #b0b6be;
+    font-size: 0.95em;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 6px;
+    overflow-x: auto;
+    max-height: 220px;
+    display: none;
+    white-space: pre-wrap;
+}
+
+.github-repo-card .show-json-btn {
+    background: #444c56;
+    color: #8ab4f8;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    transition: background 0.2s;
+}
+.github-repo-card .show-json-btn:hover {
+    background: #23272b;
+    color: #ffd600;
+}
+
+/* Generated with AI - 27.05.2025 14:10.00 */

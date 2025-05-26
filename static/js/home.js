@@ -250,10 +250,65 @@ async function fetchGitHubPulls(token, username) {
     });
     const pullsData = await pullsRes.json();
     const issuesData = await issuesRes.json();
+
+    // Show first 10 PRs and issues as cards
+    let pullsList = "";
+    if (pullsData.items && pullsData.items.length > 0) {
+        pullsList = `
+            <h3>Last 10 Pull Requests</h3>
+            <div class="github-repo-list">
+                ${pullsData.items.slice(0, 10).map(pr => `
+                    <div class="github-repo-card">
+                        <div class="repo-header">
+                            <a href="${pr.html_url}" target="_blank" class="repo-name">${pr.title}</a>
+                            <span class="repo-state" style="margin-left:10px;">[${pr.state}]</span>
+                        </div>
+                        <div class="repo-meta">
+                            <span>📦 <b>${pr.repository_url.split('/').slice(-1)[0]}</b></span>
+                            <span>👤 ${pr.user && pr.user.login ? pr.user.login : username}</span>
+                            <span>📅 Created: ${new Date(pr.created_at).toLocaleDateString()}</span>
+                            <span>💬 Comments: ${pr.comments}</span>
+                            <span>🔗 <a href="${pr.html_url}" target="_blank">View PR</a></span>
+                        </div>
+                        <div class="repo-desc">${pr.body ? pr.body.substring(0, 120).replace(/\n/g, " ") + (pr.body.length > 120 ? "..." : "") : "<i>No description</i>"}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    let issuesList = "";
+    if (issuesData.items && issuesData.items.length > 0) {
+        issuesList = `
+            <h3>Last 10 Issues</h3>
+            <div class="github-repo-list">
+                ${issuesData.items.slice(0, 10).map(issue => `
+                    <div class="github-repo-card">
+                        <div class="repo-header">
+                            <a href="${issue.html_url}" target="_blank" class="repo-name">${issue.title}</a>
+                            <span class="repo-state" style="margin-left:10px;">[${issue.state}]</span>
+                        </div>
+                        <div class="repo-meta">
+                            <span>📦 <b>${issue.repository_url.split('/').slice(-1)[0]}</b></span>
+                            <span>👤 ${issue.user && issue.user.login ? issue.user.login : username}</span>
+                            <span>📅 Created: ${new Date(issue.created_at).toLocaleDateString()}</span>
+                            <span>💬 Comments: ${issue.comments}</span>
+                            <span>🔗 <a href="${issue.html_url}" target="_blank">View Issue</a></span>
+                        </div>
+                        <div class="repo-desc">${issue.body ? issue.body.substring(0, 120).replace(/\n/g, " ") + (issue.body.length > 120 ? "..." : "") : "<i>No description</i>"}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
     document.getElementById("github-pulls-info").innerHTML = `
         <h2>Pull Requests & Issues</h2>
         <div><b>Pull Requests:</b> ${pullsData.total_count}</div>
         <div><b>Issues:</b> ${issuesData.total_count}</div>
+        ${pullsList}
+        ${issuesList}
+        <!-- Generated with AI - 26.05.2025 21:09.00 -->
     `;
 }
 
@@ -297,7 +352,21 @@ async function fetchGitHubWebhooks(token, username) {
                 <div class="repo-meta">
                     <span>🔗 Webhooks: ${hooks.length}</span>
                 </div>
-                ${hooks.length > 0 ? `<ul style="margin-top:8px;">${hooks.map(h => `<li>${h.name} → <code>${h.config.url}</code></li>`).join('')}</ul>` : "<div style='color:#b0b6be;'>No webhooks</div>"}
+                ${
+                    hooks.length > 0
+                    ? `<ul style="margin-top:8px;">
+                        ${hooks.map(h => `
+                            <li>
+                                <b>Name:</b> ${h.name} <br>
+                                <b>URL:</b> <code>${h.config.url}</code><br>
+                                <b>Active:</b> ${h.active ? "Yes" : "No"}<br>
+                                <b>Events:</b> ${h.events.join(", ")}<br>
+                                <b>Last Response:</b> ${h.last_response && h.last_response.status ? h.last_response.status : "n/a"}
+                            </li>
+                        `).join('')}
+                    </ul>`
+                    : "<div style='color:#b0b6be;'>No webhooks</div>"
+                }
             </div>
         `;
     }
@@ -352,17 +421,204 @@ async function fetchGitHubAdmin(token, username) {
     `;
 }
 
-// Call these after user info is loaded:
+// Add this function for the "keys" section
+// Generated with AI - 26.05.2025 21:54.00
+async function fetchGitHubKeys(token) {
+    const container = document.getElementById("github-keys-info");
+    container.innerHTML = `<h2>SSH Keys, Tokens & App Access</h2><div>Loading...</div>`;
+
+    // Fetch SSH keys
+    let sshKeys = [];
+    try {
+        const sshRes = await fetch("https://api.github.com/user/keys", {
+            headers: {
+                "Authorization": `token ${token}`,
+                "Accept": "application/vnd.github+json"
+            }
+        });
+        if (sshRes.ok) {
+            sshKeys = await sshRes.json();
+        }
+    } catch (e) {
+        // ignore
+    }
+
+    // Fetch authorized OAuth apps (tokens)
+    let appTokens = [];
+    try {
+        const appRes = await fetch("https://api.github.com/applications", {
+            headers: {
+                "Authorization": `token ${token}`,
+                "Accept": "application/vnd.github+json"
+            }
+        });
+        if (appRes.ok) {
+            appTokens = await appRes.json();
+        }
+    } catch (e) {
+        // ignore
+    }
+
+    let html = `<h2>SSH Keys, Tokens & App Access</h2>`;
+
+    // SSH Keys as cards
+    html += `<div style="margin-bottom:10px;"><b>SSH Keys:</b> ${sshKeys.length}</div>`;
+    if (sshKeys.length > 0) {
+        html += `<div class="github-repo-list">`;
+        html += sshKeys.map(k => `
+            <div class="github-repo-card">
+                <div class="repo-header">
+                    <span class="repo-name">${k.title}</span>
+                    <span style="margin-left:10px;">[ID: ${k.id}]</span>
+                </div>
+                <div class="repo-meta">
+                    <span>🗝️ Created: ${new Date(k.created_at).toLocaleString()}</span>
+                </div>
+                <div class="repo-desc" style="word-break:break-all;">
+                    <b>Key:</b>
+                    <code id="ssh-key-${k.id}">${k.key}</code>
+                    <button class="copy-btn" title="Copy SSH Key" onclick="navigator.clipboard.writeText('${k.key.replace(/'/g, "\\'")}');">
+                        <svg width="18" height="18" viewBox="0 0 24 24" style="vertical-align:middle;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 18H8V7h11v16z"/></svg>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        html += `</div>`;
+    } else {
+        html += `<div style="color:#b0b6be;">No SSH keys found.</div>`;
+    }
+
+    // OAuth Apps as cards
+    html += `<div style="margin-top:16px; margin-bottom:10px;"><b>Authorized OAuth Apps:</b> ${appTokens.length}</div>`;
+    if (appTokens.length > 0) {
+        html += `<div class="github-repo-list">`;
+        html += appTokens.map(a => `
+            <div class="github-repo-card">
+                <div class="repo-header">
+                    <span class="repo-name">${a.name || a.id}</span>
+                    <span style="margin-left:10px;">[ID: ${a.id}]</span>
+                </div>
+                <div class="repo-desc" style="word-break:break-all;">
+                    <b>Token:</b>
+                    <code id="oauth-token-${a.id}">${a.token || "(hidden)"}</code>
+                    ${a.token ? `
+                    <button class="copy-btn" title="Copy Token" onclick="navigator.clipboard.writeText('${a.token.replace(/'/g, "\\'")}');">
+                        <svg width="18" height="18" viewBox="0 0 24 24" style="vertical-align:middle;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 18H8V7h11v16z"/></svg>
+                    </button>
+                    ` : ""}
+                </div>
+            </div>
+        `).join('');
+        html += `</div>`;
+    } else {
+        html += `<div style="color:#b0b6be;">No authorized OAuth apps found.</div>`;
+    }
+
+    container.innerHTML = html;
+}
+// Generated with AI - 26.05.2025 21:54.00
+
+// Add this function for the "statistics" section
+// Generated with AI - 26.05.2025 21:54.00
+async function fetchGitHubStats(token, username) {
+    const container = document.getElementById("github-stats-info");
+    container.innerHTML = `<h2>Statistics & Analytics</h2><div>Loading...</div>`;
+
+    // Dropdown for number of events
+    const dropdownId = "stats-event-count";
+    const options = [1, 5, 10, 20, 50, 100];
+    let selectedCount = 10;
+
+    function renderDropdown(selected) {
+        return `
+            <label for="${dropdownId}" style="margin-right:8px;">Show last</label>
+            <select id="${dropdownId}" style="margin-bottom:16px;">
+                ${options.map(opt => `<option value="${opt}"${opt === selected ? " selected" : ""}>${opt}</option>`).join('')}
+            </select>
+            <span>public events</span>
+        `;
+    }
+
+    container.innerHTML = `<h2>Statistics & Analytics</h2>
+        <div style="margin-bottom:16px;">${renderDropdown(selectedCount)}</div>
+        <div id="stats-events-list"></div>
+    `;
+
+    async function renderEvents(count) {
+        let events = [];
+        let html = "";
+        try {
+            const eventsRes = await fetch(`https://api.github.com/users/${username}/events/public`, {
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Accept": "application/vnd.github+json"
+                }
+            });
+            if (eventsRes.ok) {
+                events = await eventsRes.json();
+            }
+        } catch (e) {
+            // ignore
+        }
+        html += `<div style="margin-bottom:10px;"><b>Recent Public Events:</b> ${events.length}</div>`;
+        if (events.length > 0) {
+            html += `<div class="github-repo-list">`;
+            html += events.slice(0, count).map((ev, idx) => {
+                // Short summary for common event types
+                let summary = "";
+                switch (ev.type) {
+                    case "PushEvent":
+                        summary = `Pushed ${ev.payload.commits?.length || 0} commit(s) to <b>${ev.repo?.name || "?"}</b>`;
+                        break;
+                    case "CreateEvent":
+                        summary = `Created ${ev.payload.ref_type} <b>${ev.payload.ref}</b> in <b>${ev.repo?.name || "?"}</b>`;
+                        break;
+                    case "PullRequestEvent":
+                        summary = `${ev.payload.action} pull request <b>#${ev.payload.number}</b> in <b>${ev.repo?.name || "?"}</b>`;
+                        break;
+                    case "IssuesEvent":
+                        summary = `${ev.payload.action} issue <b>#${ev.payload.issue?.number}</b> in <b>${ev.repo?.name || "?"}</b>`;
+                        break;
+                    default:
+                        summary = `Event in <b>${ev.repo?.name || "?"}</b>`;
+                }
+                return `
+                    <div class="github-repo-card">
+                        <div class="repo-header">
+                            <span class="repo-name">${ev.type}</span>
+                            <span style="margin-left:10px;">[${ev.repo ? ev.repo.name : "n/a"}]</span>
+                            <span style="margin-left:auto;font-size:0.95em;color:#b0b6be;">${new Date(ev.created_at).toLocaleString()}</span>
+                        </div>
+                        <div class="event-summary">${summary}</div>
+                        <button class="show-json-btn" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'; this.textContent = this.textContent === 'Show Details' ? 'Hide Details' : 'Show Details';">Show Details</button>
+                        <pre class="event-json">${JSON.stringify(ev.payload, null, 2)}</pre>
+                    </div>
+                `;
+            }).join('');
+            html += `</div>`;
+        } else {
+            html += `<div style="color:#b0b6be;">No recent public events found.</div>`;
+        }
+        document.getElementById("stats-events-list").innerHTML = html;
+    }
+
+    // Initial render
+    renderEvents(selectedCount);
+
+    // Dropdown event
+    container.querySelector(`#${dropdownId}`).addEventListener("change", function() {
+        renderEvents(Number(this.value));
+    });
+}
+// Generated with AI - 26.05.2025 21:54.00
+
+// Update fetchAllExtraGitHubInfo to call the new functions
+// Generated with AI - 27.05.2025 13:44.00
 async function fetchAllExtraGitHubInfo(token, username) {
     fetchGitHubPulls(token, username);
     fetchGitHubWebhooks(token, username);
-    // fetchGitHubKeys(token);
+    fetchGitHubKeys(token);
     fetchGitHubActions(token, username);
-    // fetchGitHubStats(token, username);
+    fetchGitHubStats(token, username);
     fetchGitHubAdmin(token, username);
 }
-
-
-
-
-
