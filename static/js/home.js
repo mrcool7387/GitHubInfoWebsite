@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadBtn.addEventListener("click", () => {
         const token = tokenInput.value.trim();
-        if (!token) {
-            showError("GitHub Token", "Please enter a valid GitHub token.");
+        if (!token) { // || !token.startsWith("ghp") || token.length !== 24) {
+            showError("GitHub Token", "Please enter a valid GitHub token");
             return;
         }
         // Show loading animation for 3 seconds
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let loadingDiv = document.createElement("div");
         loadingDiv.className = "center-token-loading";
         loadingDiv.innerHTML = `
-            <div class="spinner"></div>
+            <div class="loader"></div>
             <span>Loading GitHub Info...</span>
         `;
         centerWrap.parentNode.insertBefore(loadingDiv, centerWrap);
