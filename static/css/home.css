@@ -348,3 +348,10 @@
 }
 
 /* Generated with AI - 27.05.2025 14:10.00 */
+.copy-btn svg {
+    fill: white !important;
+}
+
+.copy-btn button {
+    border: none;
+}

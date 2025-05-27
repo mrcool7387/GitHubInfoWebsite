@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (res.status === 403) {
                 errorMsg = "Access forbidden. Token may not have sufficient permissions or is restricted.";
             } else {
-                errorMsg = `Unkown Error: ${res.status} ${getStatusMeaning(res.status)}`;
+                errorMsg = "Unknown Error: " + res.status + " " + getStatusMeaning(res.status);
             }
         } catch (e) {
             errorMsg = `Network Error: ${e.message}`;
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Go back to login, show error, allow retry
             loadingDiv.remove();
             centerWrap.style.display = "flex";
-            showError("GitHub Token", errorMsg || "Unbekannter Fehler");
+            showError("GitHub Token", errorMsg || "Unknown error");
             tokenInput.focus();
         }
     });
@@ -416,7 +416,7 @@ async function fetchGitHubActions(token, username) {
 // Admin info is only available for org admins, so just show a note
 async function fetchGitHubAdmin(token, username) {
     document.getElementById("github-admin-info").innerHTML = `
-        <h2>Admin-Zugriffe</h2>
+        <h2>Admin Access</h2>
         <div>Admin access and organization management features are only available for organization admins.</div>
     `;
 }
@@ -494,19 +494,21 @@ async function fetchGitHubKeys(token) {
         html += `<div class="github-repo-list">`;
         html += appTokens.map(a => `
             <div class="github-repo-card">
-                <div class="repo-header">
-                    <span class="repo-name">${a.name || a.id}</span>
-                    <span style="margin-left:10px;">[ID: ${a.id}]</span>
-                </div>
-                <div class="repo-desc" style="word-break:break-all;">
-                    <b>Token:</b>
-                    <code id="oauth-token-${a.id}">${a.token || "(hidden)"}</code>
-                    ${a.token ? `
-                    <button class="copy-btn" title="Copy Token" onclick="navigator.clipboard.writeText('${a.token.replace(/'/g, "\\'")}');">
-                        <svg width="18" height="18" viewBox="0 0 24 24" style="vertical-align:middle;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 18H8V7h11v16z"/></svg>
-                    </button>
-                    ` : ""}
-                </div>
+            <div class="repo-header">
+                <span class="repo-name">${a.name || a.id}</span>
+                <span style="margin-left:10px;">[ID: ${a.id}]</span>
+            </div>
+            <div class="repo-desc" style="word-break:break-all;">
+                <b>Token:</b>
+                <code id="oauth-token-${a.id}">${a.token || "(hidden)"}</code>
+                ${a.token ? `
+                <button class="copy-btn" title="Copy Token" onclick="navigator.clipboard.writeText('${a.token.replace(/'/g, "\\'")}');">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 18H8V7h11v16z"/>
+                    </svg>
+                </button>
+                ` : ""}
+            </div>
             </div>
         `).join('');
         html += `</div>`;

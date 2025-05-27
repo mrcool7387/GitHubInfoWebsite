@@ -1,5 +1,3 @@
-<!-- Generated with AI - 21.05.2025 20:36.00 -->
-
 # GitHubInfoWebsite - TODO & Feature Ideas
 
 ## UI/UX Improvements
@@ -31,13 +29,13 @@
 - Show workflows/actions status
 
 ## Security & Privacy
-- [x] Hide token after use <!-- Generated with AI - 21.05.2025 20:36.00 -->
-- [x] Warn if token is invalid or has low scopes <!-- Generated with AI - 21.05.2025 20:36.00 -->
+- [x] Hide token after use
+- [x] Warn if token is invalid or has low scopes
 - Option to use OAuth login instead of token
 
 ## Notifications & Feedback
-- [x] Toast notifications for errors/success <!-- Generated with AI - 21.05.2025 20:36.00 -->
-- [x] Loading spinners for all async actions <!-- Generated with AI - 21.05.2025 20:36.00 -->
+- [x] Toast notifications for errors/success
+- [x] Loading spinners for all async actions
 - Show API rate limit status
 - User feedback form
 
